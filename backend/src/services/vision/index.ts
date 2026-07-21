@@ -3,6 +3,8 @@ import type { VisionProvider } from './types.js';
 import { MockVisionProvider } from './mock.js';
 import { OpenAiVisionProvider } from './openai.js';
 import { GeminiVisionProvider } from './gemini.js';
+import { ClaudeVisionProvider } from './claude.js';
+import { TyphoonVisionProvider } from './typhoon.js';
 
 export * from './types.js';
 
@@ -17,6 +19,12 @@ export function getVisionProvider(): VisionProvider {
       break;
     case 'gemini':
       cached = new GeminiVisionProvider();
+      break;
+    case 'claude':
+      cached = new ClaudeVisionProvider();
+      break;
+    case 'typhoon':
+      cached = new TyphoonVisionProvider();
       break;
     case 'mock':
     default:

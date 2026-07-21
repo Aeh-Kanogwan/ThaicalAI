@@ -1,44 +1,48 @@
 import { config } from '../../config.js';
 import type { VisionProvider, VisionInput, VisionResult } from './types.js';
+import { SYSTEM_PROMPT, USER_PROMPT, imageToBase64, parseVisionJson, fetchJson } from './_shared.js';
 
-const SYSTEM_PROMPT = `You are a Thai food recognition assistant. Identify each distinct dish
-in the photo (support multiple items). Respond ONLY with JSON:
-{"items":[{"label":"<ชื่ออาหารไทย>","confidence":0-1,"estimatedPortion":"เช่น 1 จาน","grams":<number>}]}`;
-
+// Real Google Gemini generateContent vision call (gemini-1.5-flash by default),
+// asking for structured JSON per Rqm §2.
 export class GeminiVisionProvider implements VisionProvider {
   readonly name = 'gemini';
 
   async detect(input: VisionInput): Promise<VisionResult> {
-    // TODO(vision/gemini): wire the real Gemini generateContent vision call.
-    // Requires config.gemini.apiKey and config.gemini.model (default gemini-1.5-flash).
-    // The intended request structure:
-    //
-    //   const base64 = input.imageBase64 ?? input.imageBuffer!.toString('base64');
-    //   const url = `https://generativelanguage.googleapis.com/v1beta/models/${
-    //     config.gemini.model}:generateContent?key=${config.gemini.apiKey}`;
-    //   const res = await fetch(url, {
-    //     method: 'POST',
-    //     headers: { 'Content-Type': 'application/json' },
-    //     body: JSON.stringify({
-    //       systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
-    //       contents: [{ parts: [
-    //         { text: 'ระบุอาหารในภาพนี้' },
-    //         { inlineData: { mimeType: input.mimeType ?? 'image/jpeg', data: base64 } },
-    //       ] }],
-    //       generationConfig: { responseMimeType: 'application/json' },
-    //     }),
-    //   });
-    //   const json = await res.json();
-    //   const text = json.candidates[0].content.parts[0].text;
-    //   const parsed = JSON.parse(text);
-    //   return { confidence: Math.max(...parsed.items.map(i => i.confidence)), items: parsed.items };
+    if (!config.gemini.apiKey) {
+      throw new Error('GEMINI_API_KEY is not set (VISION_PROVIDER=gemini requires it).');
+    }
 
-    void SYSTEM_PROMPT;
-    void input;
-    void config;
-    throw new Error(
-      'GeminiVisionProvider not configured. Set VISION_PROVIDER=mock in dev, ' +
-        'or implement the Gemini call and provide GEMINI_API_KEY.',
-    );
+    const base64 = imageToBase64(input);
+    const url =
+      `https://generativelanguage.googleapis.com/v1beta/models/${config.gemini.model}:generateContent` +
+      `?key=${config.gemini.apiKey}`;
+
+    const json = (await fetchJson(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
+        contents: [
+          {
+            role: 'user',
+            parts: [
+              { text: USER_PROMPT },
+              { inlineData: { mimeType: input.mimeType ?? 'image/jpeg', data: base64 } },
+            ],
+          },
+        ],
+        generationConfig: { responseMimeType: 'application/json', temperature: 0.2 },
+      }),
+    })) as {
+      candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>;
+      promptFeedback?: { blockReason?: string };
+    };
+
+    if (json.promptFeedback?.blockReason) {
+      throw new Error(`Gemini blocked the request: ${json.promptFeedback.blockReason}`);
+    }
+    const text = json.candidates?.[0]?.content?.parts?.map((p) => p.text ?? '').join('');
+    if (!text) throw new Error('Gemini vision returned no content');
+    return parseVisionJson(text);
   }
 }
