@@ -1,0 +1,21 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: thaical_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: thaical
+      POSTGRES_PASSWORD: thaical_dev_pw
+      POSTGRES_DB: thaical
+    ports:
+      - "5433:5432"
+    volumes:
+      - thaical_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U thaical -d thaical"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  thaical_pgdata:

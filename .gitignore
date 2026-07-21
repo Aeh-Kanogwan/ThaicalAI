@@ -1,0 +1,29 @@
+# Node / Backend
+node_modules/
+dist/
+*.log
+.env
+.env.*
+!.env.example
+
+# Prisma
+backend/prisma/*.db
+
+# Flutter / Dart
+mobile/.dart_tool/
+mobile/.flutter-plugins
+mobile/.flutter-plugins-dependencies
+mobile/build/
+mobile/.pub-cache/
+mobile/.pub/
+mobile/android/.gradle/
+mobile/android/local.properties
+mobile/ios/Pods/
+mobile/ios/.symlinks/
+mobile/*.iml
+mobile/.idea/
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+.vscode/

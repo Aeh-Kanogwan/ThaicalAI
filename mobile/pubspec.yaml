@@ -1,0 +1,52 @@
+name: calthai_ai
+description: "CalThai AI — AI-powered Thai food calorie tracker."
+publish_to: "none"
+version: 1.0.0+1
+
+# NOTE: uses Color.withValues() and CardThemeData, which require Flutter 3.27+.
+environment:
+  sdk: ">=3.6.0 <4.0.0"
+  flutter: ">=3.27.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # State management
+  flutter_riverpod: ^2.6.1
+
+  # Networking
+  dio: ^5.7.0
+
+  # Routing
+  go_router: ^14.6.2
+
+  # Secure token storage
+  flutter_secure_storage: ^9.2.2
+
+  # Charts (calorie ring / weight tracker)
+  fl_chart: ^0.70.2
+
+  # Camera (AI scanner)
+  camera: ^0.11.0+2
+
+  # Fonts (Inter)
+  google_fonts: ^6.2.1
+
+  # Utility
+  intl: ^0.19.0
+  image_picker: ^1.1.2
+
+  cupertino_icons: ^1.0.6
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+    - assets/icons/

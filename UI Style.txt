@@ -1,0 +1,154 @@
+Project Brief: CalThai AI
+
+1. Product Vision
+
+CalThai AI is a modern, intuitive, and high-empathy calorie tracker specifically optimized for Thai cuisine. By leveraging AI-powered visual recognition, it removes the friction of manual logging, helping users manage their nutrition with accuracy and ease.
+
+2. Core Value Proposition
+
+
+
+
+
+Frictionless Tracking: Instant identification of complex Thai street food and home-cooked meals via camera.
+
+
+
+Cultural Specialization: Deep accuracy for Thai dishes, including specific macro and sodium insights.
+
+
+
+Non-Judgmental Guidance: A friendly, health-focused aesthetic that encourages consistency without guilt.
+
+3. Target Audience
+
+
+
+
+
+Health-conscious individuals in Thailand or fans of Thai cuisine.
+
+
+
+Users looking for a faster alternative to traditional manual food logging apps.
+
+
+
+People managing specific dietary goals (weight loss, muscle gain, sodium restriction).
+
+4. Visual Identity & Design System
+
+
+
+
+
+Style: Modern Minimalist, Health & Fitness aesthetic.
+
+
+
+Tone: Warm, friendly, professional, and high-empathy.
+
+
+
+Color Palette:
+
+
+
+
+
+Primary: Fresh Mint Green (#10B981) - representing health and growth.
+
+
+
+Accent: Light Coral/Orange - used for calories and highlights.
+
+
+
+Background: Clean White (#FFFFFF) and Soft Neutral Grays (#F8F9FF) for a spacious, clean feel.
+
+
+
+Typography: Clean sans-serif (Inter) with a clear hierarchy for readability.
+
+
+
+Components: Rounded corners (8px), subtle elevation, and pulsing AI indicators.
+
+5. Feature Specifications
+
+A. Daily Dashboard
+
+
+
+
+
+Circular Progress Ring: Real-time visualization of "Kcal Left" vs. daily goal.
+
+
+
+Macro Breakdown: At-a-glance cards for Protein, Carbs, and Fat progress.
+
+
+
+Daily Log: Chronological timeline of meals (Breakfast, Lunch, Dinner, Snacks) with food thumbnails.
+
+
+
+Smart Navigation: Persistent bottom navigation for quick access to history, scanning, and profile.
+
+B. AI Food Scanner (Hero Feature)
+
+
+
+
+
+Real-time Viewfinder: Full-screen camera interface with AI bounding boxes.
+
+
+
+Motion-Driven Feedback: Animated horizontal scanning line and pulsing glow effects to indicate active "Analyzing..." state.
+
+
+
+Daily Scan Quota: "AI Scans Left Today" badge to manage API usage and encourage premium conversion.
+
+
+
+Post-Scan Modal: Instant match results with 98% accuracy, serving size selection (Small/Regular/Large), and macro summary.
+
+C. Premium Subscription (Paywall)
+
+
+
+
+
+Value Triggers: Unlimited AI scans, detailed sodium insights, and Health app synchronization.
+
+
+
+Pricing Strategy: Focus on a "Best Value" Yearly Plan (฿890/year) vs. Monthly Plan (฿99/month).
+
+
+
+Onboarding: High-converting "Start 7-Day Free Trial" call-to-action.
+
+6. Success Metrics
+
+
+
+
+
+Daily Active Users (DAU): Monitoring engagement with the calorie ring.
+
+
+
+Scan Conversion Rate: Percentage of scans that result in a logged meal.
+
+
+
+Premium Conversion: Percentage of users upgrading from the 10-scan daily limit.
+
+
+
+Retention: Average meal logging streak per user.
+

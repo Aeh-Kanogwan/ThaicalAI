@@ -1,0 +1,157 @@
+// CalThai AI — Prisma schema
+// Postgres (see docker-compose.yml: host port 5433, db/user/pw = thaical)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Tier {
+  free
+  vip
+}
+
+enum Sex {
+  male
+  female
+}
+
+enum ActivityLevel {
+  sedentary
+  light
+  moderate
+  active
+  very_active
+}
+
+enum Goal {
+  lose
+  maintain
+  gain
+}
+
+enum MealType {
+  breakfast
+  lunch
+  dinner
+  snack
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  tier         Tier     @default(free)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  profile      Profile?
+  mealLogs     MealLog[]
+  waterEntries WaterEntry[]
+  exercises    ExerciseEntry[]
+  weights      WeightEntry[]
+  scans        ScanRecord[]
+}
+
+model Profile {
+  id            String        @id @default(cuid())
+  userId        String        @unique
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sex           Sex
+  age           Int
+  heightCm      Float
+  weightKg      Float
+  activityLevel ActivityLevel
+  goal          Goal
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
+
+model Food {
+  id          String   @id @default(cuid())
+  nameTh      String
+  nameEn      String?
+  keywords    String[] @default([])
+  calories    Int
+  protein     Float
+  fat         Float
+  carbs       Float
+  sodium      Float?
+  servingSize String   @default("1 จาน")
+  isVerified  Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  mealLogs    MealLog[]
+
+  @@index([nameTh])
+  @@index([keywords], type: Gin)
+  @@map("foods")
+}
+
+model MealLog {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  foodId     String?
+  food       Food?    @relation(fields: [foodId], references: [id], onDelete: SetNull)
+  customName String?
+  mealType   MealType
+  grams      Float
+  calories   Int
+  protein    Float
+  carbs      Float
+  fat        Float
+  sodium     Float?
+  scanId     String?
+  loggedAt   DateTime @default(now())
+  createdAt  DateTime @default(now())
+
+  @@index([userId, loggedAt])
+}
+
+model WaterEntry {
+  id       String   @id @default(cuid())
+  userId   String
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  ml       Int
+  loggedAt DateTime @default(now())
+
+  @@index([userId, loggedAt])
+}
+
+model ExerciseEntry {
+  id             String   @id @default(cuid())
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name           String
+  minutes        Int
+  caloriesBurned Int
+  loggedAt       DateTime @default(now())
+
+  @@index([userId, loggedAt])
+}
+
+model WeightEntry {
+  id       String   @id @default(cuid())
+  userId   String
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  weightKg Float
+  photoUrl String?
+  loggedAt DateTime @default(now())
+
+  @@index([userId, loggedAt])
+}
+
+model ScanRecord {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@index([userId, createdAt])
+}
