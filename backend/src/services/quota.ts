@@ -1,6 +1,6 @@
 import type { Tier } from '@prisma/client';
 import { prisma } from '../prisma.js';
-import { startOfTodayUtc, endOfTodayUtc } from '../lib/dates.js';
+import { startOfTodayBkk, endOfTodayBkk } from '../lib/dates.js';
 
 export const FREE_LIFETIME_LIMIT = 3; // Rqm §5: free = 3 lifetime trial scans
 export const VIP_DAILY_LIMIT = 10; // Rqm §5: VIP = up to 10/day
@@ -12,19 +12,19 @@ export interface QuotaStatus {
   tier: Tier;
 }
 
-// Compute current quota usage.
-//  - free: lifetime count of ScanRecord; resetAt = null (no reset). We expose
-//    end-of-today as a placeholder ISO so the contract's resetAt stays a string.
-//  - vip:  count within today (UTC); resetAt = end of today.
+// Compute current quota usage. Daily windows use the Bangkok calendar day.
+//  - free: lifetime count of ScanRecord; no real reset — we expose end-of-today
+//    (Bangkok) as a placeholder ISO so the contract's resetAt stays a string.
+//  - vip:  count within today (Bangkok); resetAt = end of today (Bangkok).
 export async function getQuota(userId: string, tier: Tier): Promise<QuotaStatus> {
   if (tier === 'vip') {
     const used = await prisma.scanRecord.count({
-      where: { userId, createdAt: { gte: startOfTodayUtc(), lt: endOfTodayUtc() } },
+      where: { userId, createdAt: { gte: startOfTodayBkk(), lt: endOfTodayBkk() } },
     });
     return {
       used,
       limit: VIP_DAILY_LIMIT,
-      resetAt: endOfTodayUtc().toISOString(),
+      resetAt: endOfTodayBkk().toISOString(),
       tier,
     };
   }
@@ -34,7 +34,7 @@ export async function getQuota(userId: string, tier: Tier): Promise<QuotaStatus>
   return {
     used,
     limit: FREE_LIFETIME_LIMIT,
-    resetAt: endOfTodayUtc().toISOString(),
+    resetAt: endOfTodayBkk().toISOString(),
     tier,
   };
 }

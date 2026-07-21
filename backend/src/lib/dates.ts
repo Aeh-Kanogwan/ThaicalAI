@@ -1,28 +1,30 @@
-// Returns [start, end) UTC boundaries for a YYYY-MM-DD calendar day.
-// NOTE: dev-simple — treats the date as a UTC day. A production build should
-// resolve the day in the user's timezone (Asia/Bangkok).
+// Day boundaries are resolved in Asia/Bangkok (UTC+7). Thailand observes no DST,
+// so a fixed +07:00 offset is correct year-round — no tz database needed.
+const BKK_OFFSET = '+07:00';
+const BKK_SHIFT_MS = 7 * 60 * 60 * 1000;
+
+// Returns [start, end) UTC instants bounding a YYYY-MM-DD Bangkok calendar day.
 export function dayRange(date: string): { start: Date; end: Date } {
-  const start = new Date(`${date}T00:00:00.000Z`);
+  const start = new Date(`${date}T00:00:00.000${BKK_OFFSET}`);
   if (Number.isNaN(start.getTime())) {
     throw new Error('Invalid date');
   }
-  const end = new Date(start);
-  end.setUTCDate(end.getUTCDate() + 1);
+  // Thailand has no DST, so a Bangkok day is exactly 24h.
+  const end = new Date(start.getTime() + 24 * 60 * 60 * 1000);
   return { start, end };
 }
 
+// Today's date (YYYY-MM-DD) as it reads on a clock in Bangkok.
 export function todayIso(): string {
-  return new Date().toISOString().slice(0, 10);
+  return new Date(Date.now() + BKK_SHIFT_MS).toISOString().slice(0, 10);
 }
 
-// Start of *today* (UTC) — used for VIP daily quota window.
-export function startOfTodayUtc(): Date {
-  return new Date(`${todayIso()}T00:00:00.000Z`);
+// Start of *today* in Bangkok (as a UTC instant) — used for VIP daily quota window.
+export function startOfTodayBkk(): Date {
+  return dayRange(todayIso()).start;
 }
 
-// End of today (UTC) — the resetAt for a daily quota.
-export function endOfTodayUtc(): Date {
-  const s = startOfTodayUtc();
-  s.setUTCDate(s.getUTCDate() + 1);
-  return s;
+// End of today in Bangkok (as a UTC instant) — the resetAt for a daily quota.
+export function endOfTodayBkk(): Date {
+  return dayRange(todayIso()).end;
 }
