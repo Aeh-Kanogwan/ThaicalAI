@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>CalThai AI — Playground</title>
+<style>
+  :root{--mint:#10B981;--coral:#FB923C;--bg:#F8F9FF;--card:#fff;--ink:#111827;--muted:#6B7280;--line:#E5E7EB}
+  *{box-sizing:border-box}
+  body{font-family:Inter,-apple-system,Segoe UI,Roboto,'Noto Sans Thai',sans-serif;background:var(--bg);color:var(--ink);margin:0;padding:24px;line-height:1.5}
+  h1{font-size:22px;margin:0 0 2px} .sub{color:var(--muted);font-size:13px;margin-bottom:18px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px;max-width:1100px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+  .card h2{font-size:15px;margin:0 0 12px;display:flex;align-items:center;gap:8px}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--mint);display:inline-block}
+  label{display:block;font-size:12px;color:var(--muted);margin:8px 0 3px}
+  input,select{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:8px;font-size:14px;font-family:inherit}
+  .row{display:flex;gap:8px} .row>*{flex:1}
+  button{background:var(--mint);color:#fff;border:0;border-radius:8px;padding:10px 14px;font-size:14px;font-weight:600;cursor:pointer;margin-top:10px}
+  button.ghost{background:#fff;color:var(--mint);border:1px solid var(--mint)}
+  button:disabled{opacity:.5;cursor:not-allowed}
+  pre{background:#0B1020;color:#D1FAE5;padding:10px;border-radius:8px;font-size:12px;overflow:auto;max-height:240px;white-space:pre-wrap;word-break:break-word}
+  .pill{display:inline-block;background:#ECFDF5;color:#065F46;border-radius:999px;padding:2px 10px;font-size:12px;font-weight:600}
+  .pill.warn{background:#FEF3C7;color:#92400E}
+  .big{font-size:28px;font-weight:800;color:var(--mint)} .unit{font-size:13px;color:var(--muted);font-weight:500}
+  .muted{color:var(--muted);font-size:12px}
+  .ok{color:var(--mint)} .err{color:#DC2626}
+  .topbar{max-width:1100px;display:flex;gap:10px;align-items:center;margin-bottom:16px;flex-wrap:wrap}
+  .topbar input{max-width:340px}
+</style>
+</head>
+<body>
+  <h1>🥗 CalThai AI — Playground</h1>
+  <div class="sub">หน้าทดสอบระบบผ่านเบราว์เซอร์ (ยิง REST API ตรงๆ) — ไว้ลองเล่นก่อนแอป Flutter รันได้</div>
+
+  <div class="topbar">
+    <div>
+      <label>API base</label>
+      <input id="api" value="http://localhost:4000/api/v1" />
+    </div>
+    <div><label>สถานะ</label><span id="status" class="pill warn">ยังไม่ล็อกอิน</span></div>
+    <div><label>เซิร์ฟเวอร์</label><span id="health" class="muted">กำลังเช็ค…</span></div>
+  </div>
+
+  <div class="grid">
+    <!-- AUTH -->
+    <div class="card">
+      <h2><span class="dot"></span> 1) เข้าสู่ระบบ</h2>
+      <div class="muted">ผู้ใช้ทดสอบ (seed): <b>test@calthai.app</b> / <b>Test@12345</b></div>
+      <label>Email</label><input id="email" value="test@calthai.app" />
+      <label>Password</label><input id="password" type="password" value="Test@12345" />
+      <label>ชื่อ (สำหรับสมัครใหม่)</label><input id="name" value="เจ้านาย" />
+      <div class="row">
+        <button onclick="login()">เข้าสู่ระบบ</button>
+        <button class="ghost" onclick="register()">สมัครใหม่</button>
+      </div>
+      <pre id="authOut">—</pre>
+    </div>
+
+    <!-- PROFILE -->
+    <div class="card">
+      <h2><span class="dot"></span> 2) โปรไฟล์ + เป้าแคลอรี</h2>
+      <div class="row">
+        <div><label>เพศ</label><select id="sex"><option value="male">ชาย</option><option value="female">หญิง</option></select></div>
+        <div><label>อายุ</label><input id="age" type="number" value="30" /></div>
+      </div>
+      <div class="row">
+        <div><label>ส่วนสูง (ซม.)</label><input id="heightCm" type="number" value="175" /></div>
+        <div><label>น้ำหนัก (กก.)</label><input id="weightKg" type="number" value="70" /></div>
+      </div>
+      <label>กิจกรรม</label>
+      <select id="activityLevel">
+        <option value="sedentary">นั่งทำงาน (น้อย)</option>
+        <option value="light">เบา</option>
+        <option value="moderate" selected>ปานกลาง</option>
+        <option value="active">มาก</option>
+        <option value="very_active">มากที่สุด</option>
+      </select>
+      <label>เป้าหมาย</label>
+      <select id="goal"><option value="lose">ลดน้ำหนัก</option><option value="maintain" selected>คงที่</option><option value="gain">เพิ่มกล้าม</option></select>
+      <button onclick="saveProfile()">บันทึก + คำนวณเป้า</button>
+      <div id="goalBox" style="margin-top:12px"></div>
+    </div>
+
+    <!-- SCAN -->
+    <div class="card">
+      <h2><span class="dot"></span> 3) สแกนอาหาร (AI)</h2>
+      <div class="muted">โหมด mock ใช้รูปอะไรก็ได้ (ไม่คิดเงิน). โหมด Claude ต้องตั้งคีย์ + รูปจริง</div>
+      <label>เลือกรูปอาหาร (ไม่บังคับ)</label>
+      <input id="img" type="file" accept="image/*" />
+      <button onclick="scan()">สแกน 📸</button>
+      <div id="quotaBox" style="margin-top:10px"></div>
+      <div id="scanBox"></div>
+    </div>
+
+    <!-- SEARCH -->
+    <div class="card">
+      <h2><span class="dot"></span> 4) ค้นหาอาหารในฐานข้อมูล</h2>
+      <label>คำค้น (เช่น กะเพรา, ต้มยำ)</label>
+      <div class="row"><input id="q" value="กะเพรา" /><button onclick="search()" style="flex:0 0 auto">ค้นหา</button></div>
+      <div id="searchBox" style="margin-top:10px"></div>
+    </div>
+
+    <!-- TODAY -->
+    <div class="card">
+      <h2><span class="dot"></span> 5) สรุปวันนี้</h2>
+      <button class="ghost" onclick="loadToday()">โหลดสรุปวันนี้</button>
+      <div id="todayBox" style="margin-top:10px"></div>
+    </div>
+  </div>
+
+<script>
+let TOKEN=null;
+const $=id=>document.getElementById(id);
+const api=()=> $('api').value.replace(/\/$/,'');
+function bkkToday(){return new Date(Date.now()+7*3600e3).toISOString().slice(0,10);}
+async function call(path,{method='GET',body,auth=true}={}){
+  const headers={'Content-Type':'application/json'};
+  if(auth&&TOKEN) headers.Authorization='Bearer '+TOKEN;
+  const res=await fetch(api()+path,{method,headers,body:body?JSON.stringify(body):undefined});
+  let data; try{data=await res.json()}catch{data={}}
+  if(!res.ok) throw Object.assign(new Error(data?.error?.message||('HTTP '+res.status)),{code:data?.error?.code,status:res.status});
+  return data;
+}
+function setStatus(u){ $('status').textContent=u?('ล็อกอิน: '+u.email+' ('+u.tier+')'):'ยังไม่ล็อกอิน'; $('status').className='pill'+(u?'':' warn'); }
+
+async function health(){ try{const r=await fetch(api().replace('/api/v1','')+'/health');const j=await r.json();$('health').innerHTML=j.ok?'<span class=ok>● online</span>':'?';}catch{$('health').innerHTML='<span class=err>● offline — เปิด backend ก่อน</span>';} }
+
+async function register(){ try{const d=await call('/auth/register',{auth:false,method:'POST',body:{email:$('email').value,password:$('password').value,name:$('name').value}});TOKEN=d.token;setStatus(d.user);$('authOut').textContent='สมัคร+ล็อกอินสำเร็จ ✓\n'+JSON.stringify(d.user,null,2);}catch(e){$('authOut').innerHTML='<span class=err>'+e.message+'</span>';} }
+async function login(){ try{const d=await call('/auth/login',{auth:false,method:'POST',body:{email:$('email').value,password:$('password').value}});TOKEN=d.token;setStatus(d.user);$('authOut').textContent='ล็อกอินสำเร็จ ✓\n'+JSON.stringify(d.user,null,2);loadMe();}catch(e){$('authOut').innerHTML='<span class=err>'+e.message+'</span>';} }
+async function loadMe(){ try{const d=await call('/me');if(d.profile){$('sex').value=d.profile.sex;$('age').value=d.profile.age;$('heightCm').value=d.profile.heightCm;$('weightKg').value=d.profile.weightKg;$('activityLevel').value=d.profile.activityLevel;$('goal').value=d.profile.goal;} if(d.dailyGoal) showGoal(d.dailyGoal);}catch{} }
+function showGoal(g){ $('goalBox').innerHTML=`<div class="big">${g.calories} <span class="unit">kcal/วัน</span></div>
+  <div class="muted">โปรตีน ${g.proteinG}g · คาร์บ ${g.carbsG}g · ไขมัน ${g.fatG}g · BMR ${g.bmr} · TDEE ${g.tdee}</div>`; }
+async function saveProfile(){ try{const d=await call('/me/profile',{method:'PUT',body:{sex:$('sex').value,age:+$('age').value,heightCm:+$('heightCm').value,weightKg:+$('weightKg').value,activityLevel:$('activityLevel').value,goal:$('goal').value}});showGoal(d.dailyGoal);}catch(e){$('goalBox').innerHTML='<span class=err>'+e.message+'</span>';} }
+
+function fileToB64(f){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(String(r.result).split(',')[1]);r.onerror=rej;r.readAsDataURL(f);});}
+async function scan(){
+  $('scanBox').innerHTML='<span class=muted>กำลังสแกน…</span>';
+  try{
+    const f=$('img').files[0];
+    const b64=f?await fileToB64(f):'/9j/4AAQSkZJRg=='; // dummy สำหรับ mock
+    const d=await call('/scan',{method:'POST',body:{imageBase64:b64}});
+    if(d.quota) $('quotaBox').innerHTML=`<span class="pill${d.quota.used>=d.quota.limit?' warn':''}">โควตา ${d.quota.used}/${d.quota.limit}</span> <span class=muted>ความมั่นใจ ${(d.confidence*100||0).toFixed(0)}%</span>`;
+    $('scanBox').innerHTML=(d.items||[]).map(it=>{
+      const m=it.matchedFood;
+      const add=m?`<button style="margin:6px 0 0" onclick='addLog(${JSON.stringify(JSON.stringify(m))},${it.grams||100})'>+ บันทึกมื้อนี้</button>`:'<div class=muted>ไม่พบในฐานข้อมูล</div>';
+      return `<div style="border-top:1px solid var(--line);padding-top:8px;margin-top:8px">
+        <b>${it.label}</b> <span class=muted>~${it.grams}g</span><br>
+        ${m?`<span class=ok>→ ${m.nameTh} · ${m.calories} kcal</span>`:''}<br>${add}</div>`;
+    }).join('')||'<span class=muted>ไม่พบอาหาร</span>';
+  }catch(e){
+    if(e.status===402){ $('scanBox').innerHTML='<div class="pill warn">โควตาหมด — นี่คือจุดที่ Paywall เด้ง (สมัคร VIP)</div>'; }
+    else $('scanBox').innerHTML='<span class=err>'+e.message+'</span>';
+  }
+}
+async function addLog(foodJson,grams){
+  try{const m=JSON.parse(foodJson);
+    await call('/logs',{method:'POST',body:{foodId:m.id,customName:m.nameTh,mealType:'lunch',grams,calories:m.calories,protein:m.protein,carbs:m.carbs,fat:m.fat,sodium:m.sodium}});
+    loadToday();alert('บันทึก "'+m.nameTh+'" แล้ว ✓');
+  }catch(e){alert('ผิดพลาด: '+e.message);}
+}
+async function search(){
+  try{const d=await call('/foods/search?q='+encodeURIComponent($('q').value)+'&limit=10');
+    $('searchBox').innerHTML=(d.items||[]).map(i=>`<div style="border-top:1px solid var(--line);padding:6px 0"><b>${i.nameTh}</b> <span class=muted>${i.calories} kcal · P${i.protein}/C${i.carbs}/F${i.fat}</span></div>`).join('')||'<span class=muted>ไม่พบ</span>';
+  }catch(e){$('searchBox').innerHTML='<span class=err>'+e.message+'</span>';}
+}
+async function loadToday(){
+  try{const d=await call('/logs?date='+bkkToday());const s=d.summary||{};
+    $('todayBox').innerHTML=`<div class="big">${s.calories||0} <span class="unit">/ ${s.target?.calories||'-'} kcal</span></div>
+      <div class=muted>โปรตีน ${s.protein||0}g · คาร์บ ${s.carbs||0}g · ไขมัน ${s.fat||0}g</div>
+      <div style="margin-top:8px">`+((d.logs||[]).map(l=>`<div style="border-top:1px solid var(--line);padding:6px 0">${l.name} — <b>${l.calories}</b> kcal <span class=muted>(${l.mealType})</span></div>`).join('')||'<span class=muted>ยังไม่มีรายการวันนี้</span>')+'</div>';
+  }catch(e){$('todayBox').innerHTML='<span class=err>'+e.message+'</span>';}
+}
+health();
+</script>
+</body>
+</html>
