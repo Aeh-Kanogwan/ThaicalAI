@@ -11,7 +11,8 @@ import logsRoutes from './routes/logs.js';
 import trackingRoutes from './routes/tracking.js';
 
 export async function buildApp(): Promise<FastifyInstance> {
-  const app = Fastify({ logger: true });
+  // Quiet logs under the test runner; keep full logging for the dev/prod server.
+  const app = Fastify({ logger: process.env.VITEST ? false : true });
 
   await app.register(cors, { origin: true });
   await app.register(multipart, {

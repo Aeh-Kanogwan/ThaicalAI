@@ -86,6 +86,13 @@ model Food {
   isVerified  Boolean  @default(true)
   createdAt   DateTime @default(now())
 
+  // Provenance — where this row's nutrition data came from.
+  // Nullable so pre-existing rows keep working; seed rows are set to "seed".
+  source      String?  // e.g. "USDA FNDDS", "USDA SR Legacy", "OpenFoodFacts", "seed"
+  sourceRef   String?  // e.g. USDA fdcId or OFF barcode
+  sourceUrl   String?  // link back to the source record
+  importedAt  DateTime?
+
   mealLogs    MealLog[]
 
   @@index([nameTh])

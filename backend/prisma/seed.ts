@@ -84,6 +84,8 @@ async function main() {
         sodium: f.sodium,
         servingSize: f.servingSize ?? '1 จาน',
         isVerified: true,
+        source: 'seed',
+        importedAt: new Date(),
       },
     });
   }
