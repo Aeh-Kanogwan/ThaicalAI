@@ -1,4 +1,6 @@
 /// Barrel export for reusable widgets.
+library;
+
 export 'primary_button.dart';
 export 'macro_card.dart';
 export 'scan_quota_badge.dart';

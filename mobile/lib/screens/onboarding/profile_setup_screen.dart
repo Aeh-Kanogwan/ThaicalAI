@@ -91,7 +91,7 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
                 ),
                 const SizedBox(height: AppSpacing.lg),
 
-                _Label('Sex'),
+                const _Label('Sex'),
                 SegmentedButton<Sex>(
                   segments: const [
                     ButtonSegment(value: Sex.female, label: Text('Female')),
@@ -137,9 +137,9 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
                 ),
                 const SizedBox(height: AppSpacing.md),
 
-                _Label('Activity level'),
+                const _Label('Activity level'),
                 DropdownButtonFormField<ActivityLevel>(
-                  value: _activity,
+                  initialValue: _activity,
                   isExpanded: true,
                   items: ActivityLevel.values
                       .map((a) => DropdownMenuItem(
@@ -153,7 +153,7 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
                 ),
                 const SizedBox(height: AppSpacing.md),
 
-                _Label('Goal'),
+                const _Label('Goal'),
                 SegmentedButton<Goal>(
                   segments: const [
                     ButtonSegment(value: Goal.lose, label: Text('Lose')),

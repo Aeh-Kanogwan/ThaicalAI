@@ -98,12 +98,12 @@ class MockData {
             grams: 350,
             matchedFood: demoFoods[0],
           ),
-          ScanItem(
+          const ScanItem(
             label: 'ไข่ดาว',
             confidence: 0.94,
             estimatedPortion: '1 ฟอง',
             grams: 55,
-            matchedFood: const Food(
+            matchedFood: Food(
               id: 'f6',
               nameTh: 'ไข่ดาว',
               nameEn: 'Fried Egg',

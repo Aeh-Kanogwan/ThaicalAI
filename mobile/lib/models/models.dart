@@ -1,4 +1,6 @@
 /// Barrel export for all data models.
+library;
+
 export 'user.dart';
 export 'profile.dart';
 export 'daily_goal.dart';

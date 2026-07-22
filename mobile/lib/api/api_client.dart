@@ -251,7 +251,7 @@ class ApiClient {
     });
   }
 
-  /// GET /weight?from=&to= → List<WeightEntry>
+  /// GET /weight?from=&to= → `List<WeightEntry>`
   Future<List<WeightEntry>> getWeightEntries({
     DateTime? from,
     DateTime? to,

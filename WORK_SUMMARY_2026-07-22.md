@@ -10,7 +10,8 @@
 - **AI สแกนอาหาร** ทำงานครบ pipeline (mock → match ฐานข้อมูล → คิดแคล/มาโคร) และรองรับ **4 provider**: Claude (ค่าเริ่มต้น), OpenAI, Gemini, Typhoon
 - **แก้บั๊กจริง 1 จุด**: วันเปลี่ยนเป็นเวลาไทย (Asia/Bangkok) แล้ว
 - **โค้ดขึ้น GitHub แล้ว**: https://github.com/Aeh-Kanogwan/ThaicalAI
-- **ยังไม่ครบ 2 เรื่องหลัก**: (1) ฐานข้อมูลอาหารไทยยังน้อย+แหล่งอ้างอิงหลักต่อไม่ได้ (2) แอป Flutter ยังรันบนมือถือไม่ได้ (SDK ยังไม่พร้อม)
+- **โค้ด Flutter ผ่าน `flutter analyze` สะอาด 0 issues** (ติดตั้ง Flutter 3.44.7 + แก้ 1 compile error ที่เจอแล้ว)
+- **ยังไม่ครบ 2 เรื่องหลัก**: (1) ฐานข้อมูลอาหารไทยยังน้อย+แหล่งอ้างอิงหลักต่อไม่ได้ (2) แอป Flutter ยัง **รันบน emulator/มือถือ** ไม่ได้ (Android toolchain ยังไม่พร้อม) — แต่โค้ดคอมไพล์ผ่านแล้ว
 
 ---
 
@@ -48,6 +49,10 @@
 - `npm run import:foods` ดึงจากแหล่งที่เข้าถึงได้จริง + มี scheduler รายวัน (`node-cron`, 23:59 น.) ไว้ให้
 - เอกสาร `backend/docs/DATA_SOURCES.md` อธิบายแหล่ง/ลิขสิทธิ์
 
+### 2.6 Flutter — static analysis ผ่านสะอาด
+- ติดตั้ง Flutter 3.44.7 stable (ที่ `C:\src\flutter`) แล้วรัน `flutter pub get` + `flutter analyze`
+- เจอ **1 compile error จริง** (`ApiClient` ไม่ได้ import ใน `auth_state.dart`) + 1 warning + lint ย่อย → **แก้หมดแล้ว** ตอนนี้ `flutter analyze` = **No issues found!** แปลว่าโค้ด Dart 40+ ไฟล์คอมไพล์ผ่าน (เหลือแค่ Android toolchain เพื่อรัน emulator)
+
 ---
 
 ## 3. สถานะฐานข้อมูลอาหาร (ตอบคำถามเจ้านายตรงๆ)
@@ -69,7 +74,7 @@
 |---|---|---|---|
 | G1 | **Thai Food DB ไม่ครบ** (47/300-500) + แหล่งหลักต่อไม่ได้ | ค้าง | ต้องตัดสินใจ: ขอลิขสิทธิ์ Thai FCD (งานกฎหมาย) / หาไฟล์ export / จ้างคีย์ข้อมูล |
 | G2 | **ยังไม่ทดสอบ Claude ตัวจริง** | ค้าง | รอเจ้านายอนุมัติค่าใช้จ่าย แล้วผมรันให้ (ข้อ 6) |
-| G3 | **Flutter mobile รันไม่ได้** | ค้าง | Android cmdline-tools โหลดล้มเหลว + ยังไม่เซ็ต PATH — ต้องติดตั้งตอนกลางวัน (มีคน confirm) |
+| G3 | **Flutter mobile รันบน emulator ไม่ได้** | โค้ดผ่าน analyze แล้ว | ติดตั้ง Flutter 3.44.7 + โค้ด Dart `flutter analyze` = 0 issues (แก้ 1 error: `ApiClient` ไม่ได้ import) เหลือแค่ Android toolchain (cmdline-tools โหลดล้มเหลว) + emulator — ทำตอนกลางวัน |
 | G4 | **DPIA / PDPA** ก่อน go-live | ยังไม่เริ่ม | เก็บรูปอาหาร+ข้อมูลสุขภาพ (น้ำหนัก/เป้าหมาย) = ข้อมูลส่วนบุคคล ควรให้ทีม legal-data-privacy ประเมิน |
 | G5 | **ลิขสิทธิ์ scrape** ข้อมูลโภชนาการเชิงพาณิชย์ | ยังไม่เคลียร์ | ผม flag ไว้แล้ว — ควรให้ legal ยืนยันก่อน production |
 | G6 | Payment (RevenueCat) | Phase 2, ยัง stub | ตามแผน |

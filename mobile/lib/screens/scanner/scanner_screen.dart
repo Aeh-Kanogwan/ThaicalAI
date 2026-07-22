@@ -139,9 +139,7 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen>
     setState(() => _analyzing = false);
     ref.invalidate(quotaProvider);
 
-    if (result != null) {
-      await _showResults(result);
-    }
+    await _showResults(result);
   }
 
   Future<void> _showResults(ScanResult result) async {
