@@ -52,6 +52,7 @@
 ### 2.6 Flutter — static analysis ผ่านสะอาด
 - ติดตั้ง Flutter 3.44.7 stable (ที่ `C:\src\flutter`) แล้วรัน `flutter pub get` + `flutter analyze`
 - เจอ **1 compile error จริง** (`ApiClient` ไม่ได้ import ใน `auth_state.dart`) + 1 warning + lint ย่อย → **แก้หมดแล้ว** ตอนนี้ `flutter analyze` = **No issues found!** แปลว่าโค้ด Dart 40+ ไฟล์คอมไพล์ผ่าน (เหลือแค่ Android toolchain เพื่อรัน emulator)
+- รัน **`flutter test` ผ่านครบ 6/6** (models: ScanResult/Quota/ActivityLevel, widgets: CalorieRing/MacroCard) — แก้ test 1 ตัวที่ assert RichText ผิด (`findRichText: true`)
 
 ---
 

@@ -102,7 +102,9 @@ void main() {
         ),
       );
       expect(find.text('Protein'), findsOneWidget);
-      expect(find.textContaining('120 g'), findsOneWidget);
+      // MacroCard renders values in a RichText; textContaining skips RichText
+      // unless findRichText is set.
+      expect(find.textContaining('120 g', findRichText: true), findsOneWidget);
     });
   });
 }
